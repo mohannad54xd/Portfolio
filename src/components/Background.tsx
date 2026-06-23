@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 
 const Background = ({ children }: { children: React.ReactNode }) => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isHoveringInteractive, setIsHoveringInteractive] = useState(false);
   const cursorX = useMotionValue(0);
   const cursorY = useMotionValue(0);
   const springConfig = { damping: 25, stiffness: 200 };
@@ -13,6 +14,15 @@ const Background = ({ children }: { children: React.ReactNode }) => {
   const parallaxY = useTransform(cursorYSpring, [0, window.innerHeight], [-20, 20]);
 
   useEffect(() => {
+    const isInteractive = (target: EventTarget | null) => {
+      if (!(target instanceof HTMLElement)) return false;
+      return Boolean(
+        target.closest(
+          'a, button, input, textarea, select, [role="button"], [role="link"], .cursor-pointer'
+        )
+      );
+    };
+
     const handleMouse = (e: MouseEvent) => {
       cursorX.set(e.clientX);
       cursorY.set(e.clientY);
@@ -20,13 +30,15 @@ const Background = ({ children }: { children: React.ReactNode }) => {
         x: e.clientX / window.innerWidth,
         y: e.clientY / window.innerHeight,
       });
+      setIsHoveringInteractive(isInteractive(e.target));
     };
+
     window.addEventListener('mousemove', handleMouse);
     return () => window.removeEventListener('mousemove', handleMouse);
   }, []);
 
   return (
-    <div className="relative min-h-screen bg-[#020817] overflow-hidden">
+    <div className="relative min-h-screen bg-[#020817] cursor-none overflow-hidden">
       {/* Updated gradient background */}
       <motion.div 
         className="fixed inset-0 bg-gradient-to-b from-[#020817] via-[#0446c5]/10 to-[#020817]"
@@ -53,23 +65,23 @@ const Background = ({ children }: { children: React.ReactNode }) => {
         <motion.div
           className="absolute w-12 h-12 -translate-x-1/2 -translate-y-1/2 bg-blue-400/20 rounded-full blur-xl"
           animate={{
-            scale: [1, 1.5, 1],
-            opacity: [0.3, 0.5, 0.3],
+            scale: isHoveringInteractive ? 1.4 : [1, 1.5, 1],
+            opacity: isHoveringInteractive ? 0.6 : [0.3, 0.5, 0.3],
           }}
           transition={{
-            duration: 2,
-            repeat: Infinity,
+            duration: 0.3,
+            repeat: isHoveringInteractive ? 0 : Infinity,
           }}
         />
         {/* Inner cursor */}
         <motion.div
           className="absolute w-4 h-4 -translate-x-1/2 -translate-y-1/2 bg-blue-400 rounded-full"
           animate={{
-            scale: [1, 0.8, 1],
+            scale: isHoveringInteractive ? 1.2 : [1, 0.8, 1],
           }}
           transition={{
-            duration: 1,
-            repeat: Infinity,
+            duration: 0.3,
+            repeat: isHoveringInteractive ? 0 : Infinity,
           }}
         />
       </motion.div>
