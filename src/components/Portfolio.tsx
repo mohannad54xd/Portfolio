@@ -9,7 +9,7 @@ const projects = [
     title: 'SolarTrek',
     description: 'A full-stack web application for solar system exploration.',
     color: 'from-blue-500 to-cyan-500',
-    link: 'https://solartrek.co'
+    link: 'https://nasa-fbn6.vercel.app/'
   },
   {
     icon: <HiDocumentText className="text-4xl" />,
