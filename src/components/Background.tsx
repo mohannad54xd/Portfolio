@@ -26,7 +26,7 @@ const Background = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   return (
-    <div className="relative min-h-screen bg-[#020817] cursor-none overflow-hidden">
+    <div className="relative min-h-screen bg-[#020817] overflow-hidden">
       {/* Updated gradient background */}
       <motion.div 
         className="fixed inset-0 bg-gradient-to-b from-[#020817] via-[#0446c5]/10 to-[#020817]"
